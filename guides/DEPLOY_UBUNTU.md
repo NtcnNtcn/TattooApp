@@ -82,8 +82,6 @@ nano .env
 |---|---|---|
 | `DATABASE_URL` | Строка подключения к PostgreSQL | `postgresql+asyncpg://tattoo_user:tattoo_pass@db:5432/tattoo_db` |
 | `SECRET_KEY` | Секретный ключ для JWT (минимум 32 символа) | `openssl rand -hex 32` |
-| `DEFAULT_OWNER_EMAIL` | Email владельца по умолчанию | `owner@studio.ru` |
-| `DEFAULT_OWNER_PASSWORD` | Пароль владельца | сгенерируйте надежный пароль |
 | `DEFAULT_ADMIN_EMAIL` | Email администратора | `admin@studio.ru` |
 | `DEFAULT_ADMIN_PASSWORD` | Пароль администратора | сгенерируйте надежный пароль |
 | `CORS_ORIGINS` | Домены, с которых разрешены запросы | `https://yourdomain.com` |
@@ -107,8 +105,6 @@ APP_NAME=TattooStudio API
 APP_VERSION=1.0.0
 DEBUG=false
 CORS_ORIGINS=https://yourdomain.com,https://app.yourdomain.com
-DEFAULT_OWNER_EMAIL=owner@studio.ru
-DEFAULT_OWNER_PASSWORD=VerySecureOwnerPass123!
 DEFAULT_ADMIN_EMAIL=admin@studio.ru
 DEFAULT_ADMIN_PASSWORD=VerySecureAdminPass123!
 SMTP_HOST=smtp.gmail.com
@@ -472,7 +468,7 @@ sudo chown -R $USER:$USER ~/TattooApp/backend/uploads
 ## Чек-лист перед выходом в продакшн
 
 - [ ] `SECRET_KEY` изменен на криптостойкий (>= 32 символов)
-- [ ] Пароли `DEFAULT_OWNER_PASSWORD` и `DEFAULT_ADMIN_PASSWORD` надежные
+- [ ] Пароль `DEFAULT_ADMIN_PASSWORD` надежный
 - [ ] `DEBUG=false`
 - [ ] `CORS_ORIGINS` содержит только продакшен-домены
 - [ ] Настроен Nginx + HTTPS

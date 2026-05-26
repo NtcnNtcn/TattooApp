@@ -89,7 +89,7 @@ class NotificationService:
             )
 
     async def notify_admin_new_work(self, work_id: int) -> None:
-        """Push to all admin/owner users when a new work arrives."""
+        """Push to all admin users when a new work arrives."""
         from sqlalchemy import text
 
         admins = await self.db.execute(

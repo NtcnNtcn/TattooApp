@@ -55,16 +55,9 @@ class TestRolePermissions:
                                 headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 403
 
-    async def test_admin_cannot_view_report(self, client: AsyncClient, db: AsyncSession):
-        await _create_user(db, "perm_ad@test.com", "admin")
-        token = await _get_token(client, "perm_ad@test.com")
-        resp = await client.get("/api/reports/summary",
-                                headers={"Authorization": f"Bearer {token}"})
-        assert resp.status_code == 403
-
-    async def test_owner_can_do_everything(self, client: AsyncClient, db: AsyncSession):
-        await _create_user(db, "perm_ow@test.com", "owner")
-        token = await _get_token(client, "perm_ow@test.com")
+    async def test_admin_can_do_everything(self, client: AsyncClient, db: AsyncSession):
+        await _create_user(db, "perm_ad2@test.com", "admin")
+        token = await _get_token(client, "perm_ad2@test.com")
         # moderation
         resp = await client.get("/api/moderation/pending",
                                 headers={"Authorization": f"Bearer {token}"})

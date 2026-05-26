@@ -15,28 +15,21 @@ class TestReportAccess:
                                 headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 403
 
-    async def test_admin_cannot_access_reports(self, client: AsyncClient, db: AsyncSession):
-        await _create_user(db, "ad_rep@test.com", "admin")
-        token = await _get_token(client, "ad_rep@test.com")
-        resp = await client.get("/api/reports/summary",
-                                headers={"Authorization": f"Bearer {token}"})
-        assert resp.status_code == 403
-
-    async def test_owner_can_access_reports(self, client: AsyncClient, db: AsyncSession):
-        await _create_user(db, "ow_rep@test.com", "owner")
-        token = await _get_token(client, "ow_rep@test.com")
+    async def test_admin_can_access_reports(self, client: AsyncClient, db: AsyncSession):
+        await _create_user(db, "ad_rep2@test.com", "admin")
+        token = await _get_token(client, "ad_rep2@test.com")
         resp = await client.get("/api/reports/summary",
                                 headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 200
 
 
 class TestReportExport:
-    async def _owner_token(self, client, db, email="exp_owner@test.com"):
-        await _create_user(db, email, "owner")
+    async def _admin_token(self, client, db, email="exp_admin@test.com"):
+        await _create_user(db, email, "admin")
         return await _get_token(client, email)
 
     async def test_export_csv(self, client: AsyncClient, db: AsyncSession):
-        token = await self._owner_token(client, db, "csv_owner@test.com")
+        token = await self._admin_token(client, db, "csv_admin@test.com")
         resp = await client.get("/api/reports/export?format=csv",
                                 headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 200
@@ -45,14 +38,14 @@ class TestReportExport:
                or len(resp.content) > 0
 
     async def test_export_html(self, client: AsyncClient, db: AsyncSession):
-        token = await self._owner_token(client, db, "html_owner@test.com")
+        token = await self._admin_token(client, db, "html_admin@test.com")
         resp = await client.get("/api/reports/export?format=html",
                                 headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 200
         assert b"<!DOCTYPE html>" in resp.content
 
     async def test_export_pdf(self, client: AsyncClient, db: AsyncSession):
-        token = await self._owner_token(client, db, "pdf_owner@test.com")
+        token = await self._admin_token(client, db, "pdf_admin@test.com")
         resp = await client.get("/api/reports/export?format=pdf",
                                 headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 200
@@ -60,7 +53,7 @@ class TestReportExport:
         assert resp.content[:4] == b"%PDF"
 
     async def test_invalid_format(self, client: AsyncClient, db: AsyncSession):
-        token = await self._owner_token(client, db, "bad_owner@test.com")
+        token = await self._admin_token(client, db, "bad_admin@test.com")
         resp = await client.get("/api/reports/export?format=xlsx",
                                 headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 422

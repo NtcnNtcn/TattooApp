@@ -37,8 +37,6 @@ class Settings(BaseSettings):
     use_mock_email: bool = True
 
     # Default admin credentials - MUST be set in .env for first run
-    default_owner_email: str = ""
-    default_owner_password: str = ""  # Must be set in .env
     default_admin_email: str = ""
     default_admin_password: str = ""  # Must be set in .env
 

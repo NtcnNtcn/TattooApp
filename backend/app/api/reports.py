@@ -17,10 +17,10 @@ router = APIRouter(prefix="/api/reports", tags=["Reports"])
 async def get_report_summary(
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
-    current_user: User = Depends(require_role("owner")),
+    current_user: User = Depends(require_role("admin")),
     db: AsyncSession = Depends(get_db),
 ):
-    """Dashboard statistics for the owner."""
+    """Dashboard statistics for the admin."""
     svc = ReportService(db)
     return await svc.get_report_data(start_date, end_date)
 
@@ -30,10 +30,10 @@ async def export_report(
     format: str = Query("csv", enum=["csv", "html", "pdf"]),
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
-    current_user: User = Depends(require_role("owner")),
+    current_user: User = Depends(require_role("admin")),
     db: AsyncSession = Depends(get_db),
 ):
-    """Download a report file in the requested format (owner only)."""
+    """Download a report file in the requested format (admin only)."""
     svc = ReportService(db)
     data = await svc.get_report_data(start_date, end_date)
 

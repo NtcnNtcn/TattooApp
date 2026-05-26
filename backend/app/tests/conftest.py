@@ -51,7 +51,7 @@ async def client() -> AsyncClient:
 
 async def _seed_roles(db: AsyncSession):
     from sqlalchemy import text
-    roles = [("client", 1), ("master", 2), ("admin", 3), ("owner", 4)]
+    roles = [("client", 1), ("master", 2), ("admin", 3)]
     for name, level in roles:
         existing = await db.execute(text("SELECT id FROM roles WHERE name=:n"), {"n": name})
         if existing.scalar_one_or_none() is None:
@@ -100,8 +100,3 @@ async def master_user(db):
 @pytest_asyncio.fixture
 async def admin_user(db):
     return await _create_user(db, "admin@test.com", "admin")
-
-
-@pytest_asyncio.fixture
-async def owner_user(db):
-    return await _create_user(db, "owner@test.com", "owner")

@@ -11,12 +11,11 @@ from app.db.session import AsyncSessionLocal
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
 
-# Role hierarchy: level 1=client, 2=master, 3=admin, 4=owner
+# Role hierarchy: level 1=client, 2=master, 3=admin
 ROLE_LEVELS = {
     "client": 1,
     "master": 2,
     "admin": 3,
-    "owner": 4,
 }
 
 

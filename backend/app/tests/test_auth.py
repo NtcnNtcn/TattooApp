@@ -39,7 +39,7 @@ class TestRegistration:
             "email": "hacker@test.com",
             "password": "pass123",
             "full_name": "Hacker",
-            "role": "owner",      # not allowed at registration
+            "role": "admin",      # not allowed at registration
         })
         assert resp.status_code == 422
 

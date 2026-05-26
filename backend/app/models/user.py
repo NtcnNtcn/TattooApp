@@ -12,7 +12,6 @@ class RoleName(str, enum.Enum):
     client = "client"
     master = "master"
     admin = "admin"
-    owner = "owner"
 
 
 class UserStatus(str, enum.Enum):
@@ -26,7 +25,7 @@ class Role(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
-    level: Mapped[int] = mapped_column(Integer, nullable=False)  # 1=client,2=master,3=admin,4=owner
+    level: Mapped[int] = mapped_column(Integer, nullable=False)  # 1=client,2=master,3=admin
 
     users: Mapped[List["User"]] = relationship("User", back_populates="role")
 

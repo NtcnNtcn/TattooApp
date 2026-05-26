@@ -11,12 +11,11 @@ DEFAULT_ROLES = [
     {"name": "client", "level": 1},
     {"name": "master", "level": 2},
     {"name": "admin",  "level": 3},
-    {"name": "owner",  "level": 4},
 ]
 
 
 async def init_db() -> None:
-    """Seed roles and default owner/admin accounts if they don't exist."""
+    """Seed roles and default admin accounts if they don't exist."""
     async with AsyncSessionLocal() as db:
         try:
             await _seed_roles(db)
@@ -47,18 +46,7 @@ async def _seed_default_users(db: AsyncSession) -> None:
     from app.core.config import settings
 
     defaults = []
-    
-    # Only create owner if credentials are set
-    if settings.default_owner_email and settings.default_owner_password:
-        defaults.append({
-            "email": settings.default_owner_email,
-            "password": settings.default_owner_password,
-            "full_name": "Studio Owner",
-            "role_name": "owner",
-        })
-    else:
-        logger.warning("DEFAULT_OWNER_EMAIL/PASSWORD not set - skipping owner creation")
-    
+
     # Only create admin if credentials are set
     if settings.default_admin_email and settings.default_admin_password:
         defaults.append({
