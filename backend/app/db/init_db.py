@@ -78,8 +78,8 @@ async def _seed_default_users(db: AsyncSession) -> None:
 
         await db.execute(
             text(
-                "INSERT INTO users (email, hashed_password, full_name, role_id, status, is_verified, is_active)"
-                " VALUES (:email, :hashed_password, :full_name, :role_id, 'active', true, true)"
+                "INSERT INTO users (email, hashed_password, full_name, role_id, status, is_verified, is_active, created_at)"
+                " VALUES (:email, :hashed_password, :full_name, :role_id, 'active', true, true, NOW())"
             ),
             {
                 "email": user_data["email"],
