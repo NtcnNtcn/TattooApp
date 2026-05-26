@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path name="my_images" path="Android/data/com.tattoo.studio/files/Pictures" />
+    <external-files-path name="external_files" path="." />
+    <cache-path name="cache" path="." />
+</paths>

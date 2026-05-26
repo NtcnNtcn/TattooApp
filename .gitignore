@@ -1,0 +1,65 @@
+# ===== OS & IDE =====
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.vscode/
+
+# ===== Android / Gradle =====
+android/.gradle/
+android/build/
+android/app/build/
+android/captures/
+android/.externalNativeBuild/
+android/.cxx/
+android/local.properties
+android/*.apk
+android/*.aab
+android/*.hprof
+android/app/.cxx/
+
+# ===== Python / Backend =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+htmlcov/
+.coverage
+.coverage.*
+.hypothesis/
+
+# ===== Project specific =====
+backend/build_log.txt
+backend/uploads/avatars/*
+!backend/uploads/avatars/.gitkeep
+backend/uploads/works/*
+!backend/uploads/works/.gitkeep
+*.log
+
+# ===== Docker =====
+docker-compose.override.yml
+
+# ===== Misc =====
+*.db
+*.sqlite3
