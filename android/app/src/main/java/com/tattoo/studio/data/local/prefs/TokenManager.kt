@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.tattoo.studio.data.local.prefs
 
 import android.content.Context
@@ -6,6 +8,7 @@ import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.content.edit
 
 @Singleton
 class TokenManager @Inject constructor(
@@ -31,10 +34,10 @@ class TokenManager @Inject constructor(
     )
 
     fun saveTokens(accessToken: String, refreshToken: String) {
-        sharedPreferences.edit()
-            .putString("access_token", accessToken)
-            .putString("refresh_token", refreshToken)
-            .apply()
+        sharedPreferences.edit {
+            putString("access_token", accessToken)
+                .putString("refresh_token", refreshToken)
+        }
     }
 
     fun getAccessToken(): String? {
@@ -46,6 +49,6 @@ class TokenManager @Inject constructor(
     }
 
     fun clearTokens() {
-        sharedPreferences.edit().clear().apply()
+        sharedPreferences.edit { clear() }
     }
 }

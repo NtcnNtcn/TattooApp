@@ -86,7 +86,6 @@ class UserOut(BaseModel):
     email: str
     full_name: str
     avatar_url: Optional[str]
-    is_active: bool
     is_verified: bool
     status: str
     description: Optional[str] = None

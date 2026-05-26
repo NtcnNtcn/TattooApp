@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
-//    alias(libs.plugins.google.services)
 }
 
 android {
@@ -20,15 +19,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        // Read BASE_URL from local.properties or use default for development
-        val baseUrl = if (project.hasProperty("BASE_URL")) {
-            project.property("BASE_URL") as String
-        } else {
-            // Default for development - can be overridden in local.properties
-            "http://192.168.1.147:8000"  // Android emulator localhost
-        }
-        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        val baseUrl = rootProject.extra["BASE_URL"]?.toString() ?: ""
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            baseUrl
+        )
     }
 
     buildTypes {

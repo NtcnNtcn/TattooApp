@@ -14,7 +14,7 @@ import javax.inject.Singleton
  * Attaches the JWT access token to every request.
  * If a 401 is received, attempts to refresh the token once.
  * If refresh fails, clears tokens to force re-authentication.
- */
+*/
 @Singleton
 class AuthInterceptor @Inject constructor(
     private val tokenManager: TokenManager,
@@ -76,7 +76,7 @@ class AuthInterceptor @Inject constructor(
 
             client.newCall(req).execute().use { resp ->
                 if (resp.isSuccessful) {
-                    val json = resp.body?.string() ?: return null
+                    val json = resp.body.string() ?: return null
                     val gson = com.google.gson.Gson()
                     val tokens = gson.fromJson(json, com.tattoo.studio.data.remote.dto.TokenPairDto::class.java)
                     tokenManager.saveTokens(tokens.accessToken, tokens.refreshToken)

@@ -25,6 +25,7 @@ data class UserEntity(
     val favoritesReceived: Int,
     val description: String?,
     val status: String?,
+    val isVerified: Boolean,
     val createdAt: String
 )
 
@@ -45,6 +46,7 @@ fun UserDto.toEntity() = UserEntity(
     favoritesReceived = stats?.favoritesReceived ?: 0,
     description = description,
     status = status,
+    isVerified = isVerified,
     createdAt = createdAt
 )
 
@@ -53,8 +55,7 @@ fun UserEntity.toDto() = UserDto(
     email = email,
     fullName = fullName,
     avatarUrl = avatarUrl,
-    isActive = true,
-    isVerified = true,
+    isVerified = isVerified,
     role = RoleDto(0, roleName, roleLevel),
     stats = UserStatsDto(
         likesGiven = likesGiven,

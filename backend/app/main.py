@@ -59,7 +59,6 @@ app.add_middleware(
 
 # ── Static file serving for uploaded images ───────────────────────────────────
 uploads_dir = Path(settings.upload_dir)
-uploads_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 # ── Routers ───────────────────────────────────────────────────────────────────

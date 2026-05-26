@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tattoo.studio.data.remote.AppError
 import com.tattoo.studio.data.remote.toAppError
-import com.tattoo.studio.data.repository.AuthRepository
 import com.tattoo.studio.data.repository.UserRepository
+import com.tattoo.studio.domain.usecase.ResendCodeUseCase
+import com.tattoo.studio.domain.usecase.VerifyCodeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VerificationViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
+    private val verifyCodeUseCase: VerifyCodeUseCase,
+    private val resendCodeUseCase: ResendCodeUseCase,
     private val userRepository: UserRepository
 ) : ViewModel() {
 
@@ -41,7 +43,7 @@ class VerificationViewModel @Inject constructor(
                 if (result.isSuccess) onVerified()
                 else _error.value = result.exceptionOrNull()?.toAppError()?.userMessage ?: "Ошибка верификации"
             } else {
-                val result = authRepository.verifyCode(email, code, type)
+                val result = verifyCodeUseCase(email, code, type)
                 if (result.isSuccess) {
                     val hasTokens = result.getOrDefault(false)
                     if (hasTokens) onVerified()
@@ -59,7 +61,7 @@ class VerificationViewModel @Inject constructor(
         
         viewModelScope.launch {
             _error.value = null
-            val result = authRepository.resendCode(email, type)
+            val result = resendCodeUseCase(email, type)
             if (result.isSuccess) {
                 startTimer()
             } else {

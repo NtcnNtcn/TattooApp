@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.tattoo.studio.data.remote.AppError
 import com.tattoo.studio.data.remote.dto.UserDto
 import com.tattoo.studio.data.remote.toAppError
-import com.tattoo.studio.data.repository.AuthRepository
 import com.tattoo.studio.data.repository.UserRepository
+import com.tattoo.studio.domain.usecase.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val authRepository: AuthRepository
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<EditProfileUiState>(EditProfileUiState.Initial)
@@ -83,7 +83,7 @@ class EditProfileViewModel @Inject constructor(
             _isSaving.value = true
             val result = userRepository.deleteAccount()
             if (result.isSuccess) {
-                authRepository.logout()
+                logoutUseCase()
                 onSuccess()
             } else {
                 val error = result.exceptionOrNull()?.toAppError() ?: AppError.Unknown()

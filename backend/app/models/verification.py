@@ -2,7 +2,7 @@ import enum
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import Integer, String, ForeignKey, DateTime, Enum as SAEnum
+from sqlalchemy import Integer, String, ForeignKey, DateTime, Enum as SAEnum, Index
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from app.db.base import Base
@@ -16,6 +16,10 @@ class VerificationType(str, enum.Enum):
 
 class VerificationCode(Base):
     __tablename__ = "verification_codes"
+
+    __table_args__ = (
+        Index("ix_verification_codes_lookup", "email", "code", "type", "expires_at"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)

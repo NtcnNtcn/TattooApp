@@ -8,7 +8,10 @@ from fastapi import UploadFile, HTTPException, status
 from app.core.config import settings
 
 ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
-MAX_BYTES = settings.max_file_size_mb * 1024 * 1024
+
+
+def _max_bytes() -> int:
+    return settings.max_file_size_mb * 1024 * 1024
 
 # Whitelist of allowed extensions
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "gif"}
@@ -56,7 +59,7 @@ async def save_upload(file: UploadFile, subfolder: str = "works") -> str:
     content = await file.read()
     
     # Check file size
-    if len(content) > MAX_BYTES:
+    if len(content) > _max_bytes():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"File too large. Maximum allowed size is {settings.max_file_size_mb} MB.",

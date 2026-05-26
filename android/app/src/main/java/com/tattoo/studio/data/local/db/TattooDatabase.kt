@@ -10,7 +10,7 @@ import com.tattoo.studio.data.local.db.entity.WorkDetailEntity
 
 @Database(
     entities = [WorkEntity::class, UserEntity::class, FavoriteEntity::class, WorkDetailEntity::class],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 abstract class TattooDatabase : RoomDatabase() {

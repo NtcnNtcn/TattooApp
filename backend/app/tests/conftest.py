@@ -71,7 +71,7 @@ async def _create_user(db: AsyncSession, email: str, role_name: str, password: s
         text("SELECT id FROM roles WHERE name=:n"), {"n": role_name}
     )
     role_id = role_row.scalar_one()
-    user = User(email=email, hashed_password=hash_password(password), full_name="Test User", role_id=role_id, is_verified=True)
+    user = User(email=email, hashed_password=hash_password(password), full_name="Test User", role_id=role_id, is_verified=True, status="active")
     db.add(user)
     await db.commit()
     await db.refresh(user, ["role"])

@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.tattoo.studio.data.local.prefs.UserPreferences
 import com.tattoo.studio.data.remote.AppError
 import com.tattoo.studio.data.remote.api.UsersApi
-import com.tattoo.studio.data.remote.safeApiCall
 import com.tattoo.studio.data.remote.toAppError
-import com.tattoo.studio.data.repository.AuthRepository
+import com.tattoo.studio.domain.usecase.LoginUseCase
+import com.tattoo.studio.domain.usecase.LogoutUseCase
+import com.tattoo.studio.domain.usecase.RegisterUseCase
+import com.tattoo.studio.domain.usecase.VerifyCodeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +19,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: AuthRepository,
+    private val loginUseCase: LoginUseCase,
+    private val registerUseCase: RegisterUseCase,
+    private val logoutUseCase: LogoutUseCase,
+    private val verifyCodeUseCase: VerifyCodeUseCase,
     private val usersApi: UsersApi,
     private val userPrefs: UserPreferences
 ) : ViewModel() {
@@ -31,7 +36,7 @@ class AuthViewModel @Inject constructor(
     suspend fun login(email: String, password: String): Boolean {
         _isLoading.value = true
         _error.value = null
-        val result = repository.login(email, password)
+        val result = loginUseCase(email, password)
         return if (result.isSuccess) {
             fetchAndSaveUserInfo()
             _isLoading.value = false
@@ -48,7 +53,7 @@ class AuthViewModel @Inject constructor(
     suspend fun register(email: String, password: String, fullName: String, role: String): Boolean {
         _isLoading.value = true
         _error.value = null
-        val result = repository.register(email, password, fullName, role)
+        val result = registerUseCase(email, password, fullName, role)
         return if (result.isSuccess) {
             _isLoading.value = false
             true
@@ -58,6 +63,28 @@ class AuthViewModel @Inject constructor(
             _error.value = if (throwable is AppError) throwable else throwable?.toAppError()
                 ?: AppError.Unknown()
             false
+        }
+    }
+
+    suspend fun verifyCode(email: String, code: String, type: String): Boolean {
+        _isLoading.value = true
+        _error.value = null
+        val result = verifyCodeUseCase(email, code, type)
+        _isLoading.value = false
+        return if (result.isSuccess) {
+            result.getOrNull() == true
+        } else {
+            val throwable = result.exceptionOrNull()
+            _error.value = if (throwable is AppError) throwable else throwable?.toAppError()
+                ?: AppError.Unknown()
+            false
+        }
+    }
+
+    fun logout(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            logoutUseCase()
+            onComplete()
         }
     }
 

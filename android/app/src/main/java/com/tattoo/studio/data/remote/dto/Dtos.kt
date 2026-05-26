@@ -63,7 +63,6 @@ data class UserDto(
     val email: String,
     @SerializedName("full_name")  val fullName: String,
     @SerializedName("avatar_url") val avatarUrl: String?,
-    @SerializedName("is_active")  val isActive: Boolean,
     @SerializedName("is_verified") val isVerified: Boolean,
     val status: String? = null,
     val description: String? = null,

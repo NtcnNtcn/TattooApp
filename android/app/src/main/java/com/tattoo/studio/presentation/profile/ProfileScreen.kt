@@ -185,7 +185,7 @@ fun ProfileScreen(
                                     .fillMaxWidth()
                                     .padding(vertical = 32.dp)
                             ) {
-                                val isAdmin = user.role.name == "admin"
+                                val isAdmin = user.role.name == "admin" || user.role.name == "owner"
                                 val isMaster = user.role.name == "master"
                                 if (isAdmin) {
                                     Row(modifier = Modifier.fillMaxWidth()) {

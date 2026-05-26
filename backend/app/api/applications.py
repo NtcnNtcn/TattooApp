@@ -2,6 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from app.core.dependencies import get_db, get_current_user
 from app.models.user import User
@@ -16,11 +17,18 @@ async def create_application(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    # Check if master exists
-    master = await db.get(User, application_in.master_id)
+    # Check if master exists and has master role
+    result = await db.execute(
+        select(User)
+        .options(selectinload(User.role))
+        .where(User.id == application_in.master_id)
+    )
+    master = result.scalar_one_or_none()
     if not master:
         raise HTTPException(status_code=404, detail="Master not found")
-    
+    if master.role.level < 2:
+        raise HTTPException(status_code=400, detail="Selected user is not a master")
+
     new_app = ConsultationApplication(
         client_id=current_user.id,
         master_id=application_in.master_id,

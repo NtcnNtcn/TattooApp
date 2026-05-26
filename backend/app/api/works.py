@@ -63,8 +63,16 @@ async def list_works(
     order_col = desc(TattooWork.like_count) if sort == "popularity" else desc(TattooWork.created_at)
     query = query.order_by(order_col)
 
-    # Count total
-    count_query = select(func.count()).select_from(query.subquery())
+    # Count total (separate base query to avoid order_by/join side-effects)
+    count_query = (
+        select(func.count(TattooWork.id))
+        .join(TattooWork.master)
+        .where(TattooWork.status == WorkStatus.approved, User.status == "active")
+    )
+    if master_id:
+        count_query = count_query.where(TattooWork.master_id == master_id)
+    if tags:
+        count_query = count_query.join(matches, TattooWork.id == matches.c.work_id)
     total_result = await db.execute(count_query)
     total = total_result.scalar_one()
 

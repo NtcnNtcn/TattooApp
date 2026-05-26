@@ -96,7 +96,7 @@ class NotificationService:
             text("""
                 SELECT u.id, u.fcm_token FROM users u
                 JOIN roles r ON r.id = u.role_id
-                WHERE r.level >= 3 AND u.is_active = true
+                WHERE r.level >= 3 AND u.status = 'active'
             """)
         )
         for row in admins.mappings().all():
@@ -121,7 +121,7 @@ class NotificationService:
                 SELECT u.id, u.full_name, u.fcm_token
                 FROM subscriptions s
                 JOIN users u ON u.id = s.subscriber_id
-                WHERE s.master_id = :master_id AND u.is_active = true
+                WHERE s.master_id = :master_id AND u.status = 'active'
             """),
             {"master_id": master_id},
         )

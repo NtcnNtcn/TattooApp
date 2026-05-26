@@ -2,7 +2,7 @@ import enum
 from datetime import datetime, timezone
 from typing import Optional, List
 
-from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey, Text, Enum as SAEnum
+from sqlalchemy import Integer, String, DateTime, ForeignKey, Text, Enum as SAEnum
 from sqlalchemy.orm import mapped_column, MappedColumn, relationship, Mapped
 
 from app.db.base import Base
@@ -43,9 +43,8 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     avatar_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     fcm_token: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    status: Mapped[str] = mapped_column(String(50), default=UserStatus.active, nullable=False)
+    is_verified: Mapped[bool] = mapped_column(default=False, nullable=False)
+    status: Mapped[str] = mapped_column(String(50), default=UserStatus.active.value, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

@@ -113,8 +113,11 @@ class ReportService:
         )
         new_users = users_result.scalar_one() or 0
 
-        # Subscriptions total
-        subs_result = await self.db.execute(text("SELECT COUNT(*) FROM subscriptions"))
+        # Subscriptions in period
+        subs_result = await self.db.execute(
+            text("SELECT COUNT(*) FROM subscriptions WHERE created_at BETWEEN :s AND :e"),
+            {"s": start_dt, "e": end_dt},
+        )
         total_subscriptions = subs_result.scalar_one() or 0
 
         # Top 5 masters by likes
@@ -123,12 +126,14 @@ class ReportService:
                 SELECT
                     u.id AS master_id,
                     u.full_name,
-                    COALESCE(SUM(tw.like_count), 0) AS total_likes,
-                    COUNT(tw.id) FILTER (WHERE tw.status = 'approved') AS approved_works
+                    COALESCE(COUNT(l.id), 0) AS total_likes,
+                    COUNT(tw.id) FILTER (WHERE tw.status = 'approved' AND tw.created_at BETWEEN :s AND :e) AS approved_works
                 FROM users u
                 JOIN roles r ON r.id = u.role_id AND r.level >= 2
                 LEFT JOIN tattoo_works tw ON tw.master_id = u.id
                     AND tw.created_at BETWEEN :s AND :e
+                LEFT JOIN likes l ON l.work_id = tw.id
+                    AND l.created_at BETWEEN :s AND :e
                 GROUP BY u.id, u.full_name
                 ORDER BY total_likes DESC
                 LIMIT 5

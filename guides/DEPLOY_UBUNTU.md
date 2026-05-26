@@ -226,7 +226,7 @@ server {
     }
 
     location /uploads {
-        alias /var/lib/docker/volumes/tattooapp_uploads_data/_data;
+        alias /var/lib/docker/volumes/tattooapp_uploads_data/_data/;
         expires 30d;
         add_header Cache-Control "public, immutable";
     }

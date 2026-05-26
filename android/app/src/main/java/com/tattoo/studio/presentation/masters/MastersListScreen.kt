@@ -57,9 +57,9 @@ fun MastersListScreen(
 
     val filteredMasters = masters.filter {
         when (selectedTab) {
-            MasterStatusTab.ACTIVE  -> it.isActive && it.status?.lowercase() == "active"
+            MasterStatusTab.ACTIVE  -> it.status?.lowercase() == "active"
             MasterStatusTab.FROZEN  -> it.status?.lowercase() == "frozen"
-            MasterStatusTab.PENDING -> !it.isActive
+            MasterStatusTab.PENDING -> it.status?.lowercase() == "pending" || it.status?.lowercase() == "frozen"
         }
     }
 
@@ -212,7 +212,7 @@ fun MasterItem(
                 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     // Status Badge
-                    StatusBadge(status = master.status ?: "active", isActive = master.isActive)
+                    StatusBadge(status = master.status ?: "active")
                     
                     Spacer(modifier = Modifier.width(8.dp))
                     
@@ -238,13 +238,12 @@ fun MasterItem(
 }
 
 @Composable
-fun StatusBadge(status: String, isActive: Boolean = true) {
+fun StatusBadge(status: String) {
     val (color, text) = when {
-        !isActive                        -> Color(0xFFFFB74D) to "ОЖИДАЕТ"
         status.lowercase() == "active"   -> Primary to "АКТИВЕН"
         status.lowercase() == "frozen"   -> Color(0xFF64B5F6) to "ЗАМОРОЖЕН"
         status.lowercase() == "pending_deletion" -> Color(0xFFE57373) to "УДАЛЕНИЕ"
-        else -> Outline to "НЕИЗВЕСТНО"
+        else -> Color(0xFFFFB74D) to "ОЖИДАЕТ"
     }
 
     Surface(

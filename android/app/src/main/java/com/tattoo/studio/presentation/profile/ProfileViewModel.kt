@@ -9,8 +9,8 @@ import com.tattoo.studio.data.remote.dto.UserDto
 import com.tattoo.studio.data.remote.safeApiCall
 import com.tattoo.studio.data.remote.toAppError
 import com.tattoo.studio.data.repository.AdminRepository
-import com.tattoo.studio.data.repository.AuthRepository
 import com.tattoo.studio.data.repository.UserRepository
+import com.tattoo.studio.domain.usecase.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.tattoo.studio.data.local.NetworkMonitor
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val authRepository: AuthRepository,
+    private val logoutUseCase: LogoutUseCase,
     private val adminRepository: AdminRepository,
     networkMonitor: NetworkMonitor
 ) : ViewModel() {
@@ -91,7 +91,7 @@ class ProfileViewModel @Inject constructor(
 
     fun logout(onComplete: () -> Unit) {
         viewModelScope.launch {
-            authRepository.logout()
+            logoutUseCase()
             onComplete()
         }
     }

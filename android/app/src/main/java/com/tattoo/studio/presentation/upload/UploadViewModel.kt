@@ -23,11 +23,6 @@ class UploadViewModel @Inject constructor(
     val error: StateFlow<AppError?> = _error.asStateFlow()
 
     suspend fun uploadWork(imageFile: File, description: String, tags: String, mimeType: String): Boolean {
-        if (tags.isBlank()) {
-            _error.value = AppError.Validation(userMessage = "Теги не могут быть пустыми")
-            return false
-        }
-        
         _isLoading.value = true
         _error.value = null
         val result = repository.uploadWork(imageFile, description.takeIf { it.isNotBlank() }, tags, mimeType)

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 
 from app.repositories.user_repository import UserRepository
-from app.models.user import User, Role
+from app.models.user import User, Role, UserStatus
 from app.models.application import MasterApplication, ApplicationStatus
 from app.models.verification import VerificationType
 from app.core.security import hash_password, verify_password, create_access_token, create_refresh_token, decode_token
@@ -50,7 +50,7 @@ class AuthService:
         )
         
         if payload.role == "master":
-            user.is_active = False
+            user.status = UserStatus.frozen.value
         
         user = await self.user_repo.create(user)
         
@@ -96,7 +96,7 @@ class AuthService:
         await self.db.commit()
         
         # Only return tokens if user is active
-        if not user.is_active:
+        if user.status != UserStatus.active.value:
             return None
         
         return self._create_token_pair(user)
@@ -117,7 +117,7 @@ class AuthService:
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
-        if not user.is_active:
+        if user.status != UserStatus.active.value:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Inactive user account"
@@ -149,7 +149,7 @@ class AuthService:
         user_id = token_data.get("sub")
         user = await self.user_repo.get_by_id(int(user_id))
         
-        if not user or not user.is_active:
+        if not user or user.status != UserStatus.active.value:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User not found or inactive"

@@ -131,20 +131,22 @@ class FeedViewModel @Inject constructor(
 
     fun toggleLike(workId: Int) {
         viewModelScope.launch {
-            val result = socialRepository.toggleLike(workId)
-            if (result.isSuccess) {
-                val isActive = result.getOrNull() ?: false
-                _works.update { currentWorks ->
-                    currentWorks.map { 
-                        if (it.id == workId) {
-                            it.copy(
-                                isLiked = isActive,
-                                likeCount = if (isActive) it.likeCount + 1 else it.likeCount - 1
-                            )
-                        } else it
-                    }
+            val previousWorks = _works.value
+            // Optimistic update
+            _works.update { currentWorks ->
+                currentWorks.map {
+                    if (it.id == workId) {
+                        val newLiked = !it.isLiked
+                        it.copy(
+                            isLiked = newLiked,
+                            likeCount = if (newLiked) it.likeCount + 1 else it.likeCount - 1
+                        )
+                    } else it
                 }
-            } else {
+            }
+            val result = socialRepository.toggleLike(workId)
+            if (result.isFailure) {
+                _works.value = previousWorks
                 _error.value = result.exceptionOrNull()?.toAppError() ?: AppError.Unknown()
             }
         }
@@ -152,15 +154,16 @@ class FeedViewModel @Inject constructor(
 
     fun toggleFavorite(workId: Int) {
         viewModelScope.launch {
-            val result = socialRepository.toggleFavorite(workId)
-            if (result.isSuccess) {
-                val isActive = result.getOrNull() ?: false
-                _works.update { currentWorks ->
-                    currentWorks.map { 
-                        if (it.id == workId) it.copy(isFavorited = isActive) else it
-                    }
+            val previousWorks = _works.value
+            // Optimistic update
+            _works.update { currentWorks ->
+                currentWorks.map {
+                    if (it.id == workId) it.copy(isFavorited = !it.isFavorited) else it
                 }
-            } else {
+            }
+            val result = socialRepository.toggleFavorite(workId)
+            if (result.isFailure) {
+                _works.value = previousWorks
                 _error.value = result.exceptionOrNull()?.toAppError() ?: AppError.Unknown()
             }
         }

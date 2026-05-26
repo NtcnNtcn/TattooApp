@@ -5,7 +5,7 @@ from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
 from app.core.dependencies import get_db, require_role
-from app.models.user import User
+from app.models.user import User, UserStatus
 from app.models.application import MasterApplication, ConsultationApplication, ApplicationStatus
 from app.models.tattoo_work import TattooWork, WorkStatus
 from pydantic import BaseModel, ConfigDict
@@ -129,7 +129,7 @@ async def approve_master_application(
     
     master = await db.get(User, app.master_id)
     if master:
-        master.is_active = True
+        master.status = UserStatus.active.value
         db.add(master)
         
     db.add(app)

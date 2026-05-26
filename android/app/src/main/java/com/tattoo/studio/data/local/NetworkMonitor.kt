@@ -32,13 +32,16 @@ class NetworkMonitor @Inject constructor(
 
         val request = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
             .build()
-        
+
         connectivityManager.registerNetworkCallback(request, callback)
 
         // Set initial state
         val initialStatus = connectivityManager.activeNetwork?.let {
-            connectivityManager.getNetworkCapabilities(it)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            val caps = connectivityManager.getNetworkCapabilities(it)
+            caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true &&
+                caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
         } ?: false
         trySend(initialStatus)
 

@@ -24,7 +24,37 @@
 
 ---
 
-## 2. Первый пуш проекта с локальной машины
+## 2. Авторизация GitHub в PowerShell
+
+GitHub больше не принимает обычный пароль аккаунта при пуше по HTTPS. Нужно использовать **Personal Access Token (classic)**.
+
+### 2.1 Создание токена
+
+1. На GitHub зайди: **Settings → Developer settings → Personal access tokens → Tokens (classic)**.
+2. Нажми **Generate new token (classic)**.
+3. Дай имя токену (например, `TattooApp-Windows`), выбери срок действия.
+4. В разделе **Select scopes** поставь галочку **`repo`** (доступ к репозиториям).
+5. Нажми **Generate token**.
+6. **Скопируй токен** — он показывается только один раз.
+
+### 2.2 Настройка Git в PowerShell
+
+Открой PowerShell и выполни:
+
+```powershell
+git config --global credential.helper manager
+git config --global user.name "Твое Имя"
+git config --global user.email "your-email@example.com"
+```
+
+При первом `git push` (см. следующий шаг) PowerShell спросит логин и пароль:
+- **Логин:** твой username на GitHub.
+- **Пароль:** вставь скопированный **Personal Access Token** (не пароль от аккаунта!).
+- Git Credential Manager запомнит токен, и вводить его повторно не придётся.
+
+---
+
+## 3. Первый пуш проекта с локальной машины
 
 Открой терминал (PowerShell или Git Bash) в корне проекта `TattooApp`:
 
