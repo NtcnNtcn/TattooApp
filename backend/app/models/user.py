@@ -42,6 +42,7 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     avatar_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     fcm_token: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    is_active: Mapped[bool] = mapped_column(default=False, nullable=False)
     is_verified: Mapped[bool] = mapped_column(default=False, nullable=False)
     status: Mapped[str] = mapped_column(String(50), default=UserStatus.active.value, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
