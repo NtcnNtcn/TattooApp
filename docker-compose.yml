@@ -39,7 +39,7 @@ services:
       UPLOAD_DIR: /app/uploads
       DEFAULT_ADMIN_EMAIL: ${DEFAULT_ADMIN_EMAIL:-admin@tattoo.studio}
       DEFAULT_ADMIN_PASSWORD: ${DEFAULT_ADMIN_PASSWORD:-admin_secure_pass_123}
-      DEBUG: "false"
+      DEBUG: "true"
     ports:
       - "8000:8000"
     volumes:
