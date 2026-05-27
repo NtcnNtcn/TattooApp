@@ -41,7 +41,7 @@ services:
       DEFAULT_ADMIN_PASSWORD: ${DEFAULT_ADMIN_PASSWORD:-admin_secure_pass_123}
       DEBUG: "false"
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
       - uploads_data:/app/uploads
 
